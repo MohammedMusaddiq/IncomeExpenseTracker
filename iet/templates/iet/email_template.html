@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>{{ title }}</title>
+    <style>
+        .text-nowrap {
+            white-space: nowrap !important;
+        }
+
+        .table-responsive {
+            display: block;
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        .table {
+            width: 100%;
+            margin-bottom: 1rem;
+            color: #212529;
+        }
+
+        table {
+            border-collapse: collapse;
+        }
+
+        *, ::after, ::before {
+            box-sizing: border-box;
+        }
+
+        thead {
+            display: table-header-group;
+            vertical-align: middle;
+            border-color: inherit;
+        }
+
+
+        tr {
+            display: table-row;
+            vertical-align: inherit;
+            border-color: inherit;
+        }
+
+        tbody {
+            display: table-row-group;
+            vertical-align: middle;
+            border-color: inherit;
+        }
+
+        table th {
+            font-size: .9rem;
+            font-weight: 400;
+        }
+
+        th {
+            text-align: inherit;
+        }
+
+        td {
+            padding-top: 1.1rem;
+            padding-bottom: 1rem;
+        }
+
+        .table td, .table th {
+            padding: 0.75rem;
+            vertical-align: top;
+            border-top: 1px solid #dee2e6;
+        }
+
+        table td {
+            font-size: .9rem;
+            font-weight: 300;
+        }
+
+
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="row">
+        <div class="col-lg-12 text-center">
+            <h4>Income / Expense Report</h4>
+            <p>Generated on {% now "D" %}-{% now "M" %}-{% now "Y" %}</p>
+            <div class="table-responsive text-nowrap">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th style="font-weight: bold">Date</th>
+                        <th style="font-weight: bold">Type</th>
+                        <th style="font-weight: bold">Category</th>
+                        <th style="font-weight: bold">Amount</th>
+                        <th style="font-weight: bold">Note</th>
+                        <th style="font-weight: bold">Balance</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for x in content %}
+                        <tr>
+                            {% for k, v in x.items %}
+                                <td>{{ v }}</td>
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,174 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}
+    {{ title }}
+{% endblock %}
+{% block navbar %}
+    {% include 'partials/_navbar.html' %}
+{% endblock %}
+{% block content %}
+    <div class="container-fluid">
+        {% include 'partials/_messages.html' %}
+
+        {% with form as f %}
+            {% include 'iet/form_modal.html' %}
+        {% endwith %}
+        <h5 class="text-muted text-center mt-4">Transactions in The Month {% now 'M' %}-{% now 'Y' %}</h5>
+        <div class="text-center">
+            <button type="button" class="btn btn-sm btn-teal mt-0" data-toggle="modal"
+                    data-target="#myModal">Add Record
+            </button>
+        </div>
+        <div class="row mt-2 ">
+            <div class="col-lg-8 mb-4">
+                <div class="card card-body" style="box-shadow: 0 0 0.5cm rgba(40,40,40, 0.5);">
+                    <form>
+                        <div class="input-group input-group-sm">
+                            <label for="q"></label>
+                            <input name="q" type="text" class="form-control" id="q" placeholder="search for.."
+                                   style="margin-top: 0.4em">
+                            <button class="btn btn-sm btn-teal ml-1"><i class="fas fa-search"></i></button>
+                            <a href="{% url 'iet:dashboard' %}" class="btn btn-sm btn-dark ml-0"><i
+                                    class="fas fa-sync-alt"></i></a>
+                        </div>
+                    </form>
+                    <hr>
+                    {% if all_transactions %}
+
+                        <div class="table-responsive text-nowrap">
+                            <table id="myTable" class="table">
+                                <thead>
+                                <tr>
+                                    <th class="font-weight-bolder" scope="col">Date</th>
+                                    <th class="font-weight-bolder" scope="col">Type</th>
+                                    <th class="font-weight-bolder" scope="col">Category</th>
+                                    <th class="font-weight-bolder" scope="col">Amount</th>
+                                    <th class="font-weight-bolder" scope="col">Note</th>
+                                    <th class="font-weight-bolder" scope="col">Balance Amount</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for x in all_transactions %}
+                                    <tr>
+                                        <td>{{ x.created|date }}</td>
+                                        <td>{{ x.expense.name }}</td>
+                                        <td>{{ x.category.category_name }}</td>
+                                        <td class="{% if x.expense.name == 'Income' %}text-success font-weight-bolder{% else %}text-danger font-weight-bolder{% endif %}">
+                                            &#8377; {{ x.amount }}</td>
+                                        <td>{{ x.note }}</td>
+                                        <td>&#8377; {{ x.closing_balance }}</td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+
+                            <a href="{% url 'iet:download-pdf' %}" id="download-pdf" class="font-small" target="_blank">Download
+                                Pdf</a>
+                            |
+                            <a href="{% url 'iet:send-mail' %}" class="font-small">Email Report</a>
+                        </div>
+                    {% else %}
+                        <div class="text-center text-muted">No Record Found</div>
+                    {% endif %}
+                    <hr>
+                    <nav aria-label="Page navigation ">
+                        {% if all_transactions.has_other_pages %}
+                            <ul class="pagination pg-blue justify-content-center">
+                                {% if all_transactions.has_previous %}
+                                    <li class="page-item">
+                                        <a href="?page={{ all_transactions.previous_page_number }}"
+                                           class="page-link"
+                                           tabindex="-1">Previous</a>
+                                    </li>
+                                {% else %}
+                                    <li class="page-item">
+                                        <a class="page-link disabled" tabindex="-1">Previous</a>
+                                    </li>
+                                {% endif %}
+                                {% for i in all_transactions.paginator.page_range %}
+                                    {% if all_transactions.number == i %}
+                                        <li class="page-item active"><a href="?page={{ i }}"
+                                                                        class="page-link">{{ i }}<span
+                                                class="sr-only">(current)</span></a></li>
+                                    {% else %}
+                                        <li class="page-item"><a href="?page={{ i }}" class="page-link">{{ i }}</a>
+                                        </li>
+                                    {% endif %}
+                                {% endfor %}
+                                {% if all_transactions.has_next %}
+                                    <li class="page-item">
+                                        <a href="?page={{ all_transactions.next_page_number }}"
+                                           class="page-link">Next</a>
+                                    </li>
+                                {% else %}
+                                    <li class="page-item">
+                                        <a class="page-link disabled">Next</a>
+                                    </li>
+                                {% endif %}
+                            </ul>
+                        {% endif %}
+                    </nav>
+                </div>
+
+            </div>
+            <div class="col mb-4">
+                <div class="card card-body" style="box-shadow: 0 0 0.5cm rgba(40,40,40, 0.5);">
+                    <h5>Filter</h5>
+                    <p class="mb-0">By Type</p>
+                    <hr class="mt-0 mb-0">
+                    {% for foo in expense_obj %}
+                        <a href="?f={{ foo.name }}" class="mt-0 font-small">{{ foo.name|lower }}</a>
+                    {% endfor %}
+                    <p class="mb-0">By Category</p>
+                    <hr class="mt-0 mb-0">
+                    {% for foo in categories_obj %}
+                        <a href="?f={{ foo.category_name }}"
+                           class="mt-0 font-small">{{ foo.expense_type.name|lower }}-{{ foo.category_name|lower }}</a>
+                    {% endfor %}
+                    <p class="mb-0">By Date</p>
+                    <hr class="mt-0 mb-1">
+                    <form>
+                        <div class="input-group input-group-sm mt-0">
+                            <label for="from-date" class="mx-1" style="margin-top: 0.4em">From</label>
+                            <input type="date" class="form-control" id="from-date" name="from-date"
+                                   style="margin-top: 0.3em">
+                            <label for="from-date" class="mx-1" style="margin-top: 0.4em">To</label>
+                            <input type="date" class="form-control" id="from-date" name="to-date"
+                                   style="margin-top: 0.3em">
+                            <input type="submit" class="btn btn-sm btn-teal p-1" value="Filter">
+                        </div>
+                    </form>
+                    <hr class="mt-1 mb-0">
+                    <a href="/" class="text-danger mt-2">Clear all Filters</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+{% block _js %}
+    <script>
+        const expenseElement = document.getElementById("id_expense");
+        const categoryElement = document.getElementById("id_category");
+        expenseElement.onchange = function () {
+            const expenseValue = expenseElement.value;
+            $.ajax({
+                url: '/ajax-query/',
+                type: 'GET',
+                data: {'query': expenseValue},
+                success: function (response) {
+                    const res = response.data
+                    categoryElement.innerHTML = `<option selected disabled>Select Category</option>`
+                    console.log(res)
+                    res.forEach((q) => {
+                        categoryElement.innerHTML +=
+                            `
+                            <option value="${q.id}">${q.category_name}</option>
+
+                            `
+                    });
+                },
+            });
+        };
+    </script>
+{% endblock %}

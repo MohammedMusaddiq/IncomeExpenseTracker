@@ -1,0 +1,18 @@
+<div class="modal fade" id="myModal" data-backdrop="static">
+    <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">New Transaction</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form method="POST" action="{% url 'iet:dashboard' %}" autocomplete="off">
+                    {% csrf_token %}
+                    {{ f.as_p }}
+                    <button id="order" type="submit" class="btn btn-sm btn-secondary rounded-pill w-100">add record
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
