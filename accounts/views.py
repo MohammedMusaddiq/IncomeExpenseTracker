@@ -24,8 +24,6 @@ def handelLogin(request):
 
     context = {
         'title': 'Login',
-        'navbar': 'Login',
-
     }
     return render(request, 'accounts/login.html', context)
 
@@ -50,7 +48,6 @@ def handelSignup(request):
             return redirect('accounts:login')
     context = {
         'title': 'Signup',
-        'navbar': 'Sign up',
     }
     return render(request, 'accounts/signup.html', context)
 
