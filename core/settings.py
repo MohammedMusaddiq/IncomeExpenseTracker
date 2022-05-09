@@ -1,4 +1,3 @@
-import mimetypes
 from pathlib import Path
 
 import dj_database_url
@@ -14,7 +13,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-n!ue)l$t4t!)7or_i8!3cx(zx)tft@xe*hg9ua_=@w0k02xth^'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 
@@ -26,11 +25,9 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'whitenoise.runserver_nostatic',
     'django.contrib.staticfiles',
     'accounts.apps.AccountsConfig',
     'iet.apps.IetConfig',
-    "debug_toolbar",
 ]
 
 MIDDLEWARE = [
@@ -113,8 +110,8 @@ STATIC_URL = 'static/'
 STATICFILES_DIRS = [
     BASE_DIR / 'static',
 ]
-WHITENOISE_USE_FINDERS = True
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+STATIC_ROOT = BASEDIR / 'staticfiles'
+
 MEDIA_URL = 'media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
@@ -124,7 +121,7 @@ MEDIA_ROOT = BASE_DIR / 'media'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'accounts.User'
-LOGIN_URL = '/account/login/'
+LOGIN_URL = '/accounts/login/'
 LOGIN_REDIRECT_URL = "/"
 
 MESSAGE_TAGS = {
@@ -135,9 +132,6 @@ MESSAGE_TAGS = {
     messages.ERROR: 'alert-danger',
 }
 
-INTERNAL_IPS = ('127.0.0.1', '0.0.0.0', 'localhost',)
-
-mimetypes.add_type("application/javascript", ".js", True)
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
